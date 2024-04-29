@@ -1,3 +1,5 @@
+package models;
+
 import java.util.Objects;
 
 public class Task {
@@ -5,12 +7,6 @@ public class Task {
     private String description;
     private final int id;
     private Status status;
-
-    public enum Status {
-        NEW,
-        IN_PROGRESS,
-        DONE
-    }
 
     public Task(String taskName, String description, Status status, int id) {
         this.taskName = taskName;
