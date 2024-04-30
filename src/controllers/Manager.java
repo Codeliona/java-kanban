@@ -1,10 +1,6 @@
 package controllers;
 
-import models.Epic;
-import models.Status;
-import models.Subtask;
-import models.Task;
-
+import models.*;
 import java.util.*;
 
 public class Manager {
@@ -30,25 +26,45 @@ public class Manager {
     public void deleteAllTasks() {
         tasks.clear();
         subtasks.clear();
+        epics.clear();
     }
 
     public void deleteAllSubtasks() {
-        subtasks.clear();
         for (Epic epic : epics.values()) {
             epic.getSubTaskIds().clear();
+            epic.setStatus(Status.DONE);
         }
+        subtasks.clear();
     }
 
     public void deleteAllEpics() {
         epics.clear();
-        for (Subtask subtask : subtasks.values()) {
-            subtask.setParentEpicId(-1);
+        subtasks.clear();
         }
-    }
 
     public void deleteTaskById(int id) {
         tasks.remove(id);
+    }
+
+    public void deleteSubtaskById(int id) {
+        Subtask toRemove = subtasks.get(id);
+        if (toRemove != null){
+            Epic parentEpic = epics.get(toRemove.getParentEpicId());
+            if (parentEpic != null){
+                parentEpic.getSubTaskIds().remove(Integer.valueOf(id));
+                parentEpic.updateStatus();
+            }
+        }
         subtasks.remove(id);
+    }
+
+    public void deleteEpicById(int id) {
+        Epic toRemove = epics.get(id);
+        if (toRemove != null) {
+            for (Integer subtaskId : new ArrayList<>(toRemove.getSubTaskIds())) {
+                deleteSubtaskById(subtaskId);
+            }
+        }
         epics.remove(id);
     }
 
@@ -64,22 +80,26 @@ public class Manager {
         return new ArrayList<>(subtasks.values());
     }
 
-    public void createTask(String taskName, String description, Status status) {
+    public Task createTask(Task originalTask) {
         int id = generateUniqueID();
-        Task task = new Task(taskName, description, status, id);
-        tasks.put(id, task);
+        originalTask.setId(id);
+        tasks.put(id, originalTask);
+        return originalTask;
     }
 
-    public void createSubtask(String taskName, String description, Status status, int parentEpicId) {
+    public Epic createEpic(Epic originalEpic) {
         int id = generateUniqueID();
-        Subtask subtask = new Subtask(taskName, description, status, id, parentEpicId);
+        originalEpic.setId(id);
+        epics.put(id, originalEpic);
+        return originalEpic;
+    }
+
+    public Subtask createSubtask(Subtask subtask) {
+        int id = generateUniqueID();
+        subtask.setId(id);
         subtasks.put(id, subtask);
-    }
-
-    public void createEpic(String taskName, String description, Status status) {
-        int id = generateUniqueID();
-        Epic epic = new Epic(taskName, description, status, id);
-        epics.put(id, epic);
+        getEpic(subtask.getParentEpicId()).addSubtask(subtask);
+        return subtask;
     }
 
     public void updateTask(Task updatedTask) {

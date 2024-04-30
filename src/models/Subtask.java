@@ -3,8 +3,8 @@ package models;
 public class Subtask extends Task {
     private int parentEpicId;
 
-    public Subtask(String taskName, String description, Status status, int id, int parentEpicId) {
-        super(taskName, description, status, id);
+    public Subtask(String taskName, String description, Status status, int parentEpicId) {
+        super(taskName, description, status);
         this.parentEpicId = parentEpicId;
     }
 
@@ -14,5 +14,16 @@ public class Subtask extends Task {
 
     public void setParentEpicId(int parentEpicId) {
         this.parentEpicId = parentEpicId;
+    }
+
+    @Override
+    public String toString() {
+        return "Subtask{" +
+                "parentEpicId=" + parentEpicId +
+                ", id=" + getId() +
+                ", taskName='" + getTaskName() + '\'' +
+                ", description='" + getDescription() + '\'' +
+                ", status=" + getStatus() +
+                '}';
     }
 }

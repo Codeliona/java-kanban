@@ -5,14 +5,13 @@ import java.util.Objects;
 public class Task {
     private String taskName;
     private String description;
-    private final int id;
+    private int id;
     private Status status;
 
-    public Task(String taskName, String description, Status status, int id) {
+    public Task(String taskName, String description, Status status) {
         this.taskName = taskName;
         this.description = description;
         this.status = status;
-        this.id = id;
     }
 
     public String getTaskName(){
@@ -35,6 +34,10 @@ public class Task {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public Status getStatus(){
         return status;
     }
@@ -54,5 +57,15 @@ public class Task {
     @Override
     public int hashCode() {
         return Objects.hash(taskName, id);
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "taskName='" + getTaskName() + '\'' +
+                ", description='" + getDescription() + '\'' +
+                ", id=" + getId() +
+                ", status=" + getStatus() +
+                '}';
     }
 }
