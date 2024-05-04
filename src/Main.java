@@ -1,9 +1,11 @@
-import controllers.Manager;
+import controllers.*;
 import models.*;
 
 public class Main {
+
+    private static final TaskManager manager = Managers.getDefault();
+
     public static void main(String[] args) {
-        Manager manager = new Manager();
 
         Task task1 = manager.createTask(new Task("Задача #1", "Описание первой задачи",
                 Status.IN_PROGRESS));
@@ -54,9 +56,33 @@ public class Main {
         printCurrentState(manager);
     }
 
-    private static void printCurrentState(Manager manager) {
-        System.out.println("Задачи: " + manager.getAllTasks());
-        System.out.println("Эпики: " + manager.getAllEpics());
-        System.out.println("Подзадачи: " + manager.getAllSubtasks());
+    private static void printCurrentState(TaskManager taskManager) {
+        System.out.println("Задачи: " + taskManager.getAllTasks());
+        System.out.println("Эпики: " + taskManager.getAllEpics());
+        System.out.println("Подзадачи: " + taskManager.getAllSubtasks());
     }
-}
+
+    private static void printAllTasks(TaskManager manager) {
+        System.out.println("Задачи:");
+        for (Task task : manager.getAllTasks()) {
+            System.out.println(task);
+        }
+        System.out.println("Эпики:");
+        for (Epic epic : manager.getAllEpics()) {
+            System.out.println(epic);
+            for (Subtask task : epic.getSubtasks()) {
+                System.out.println("--> " + task);
+            }
+        }
+
+        System.out.println("Подзадачи:");
+            for (Subtask subtask : manager.getAllSubtasks()) {
+                System.out.println(subtask);
+            }
+
+            System.out.println("История:");
+            for (Task task : manager.getHistory()) {
+                System.out.println(task);
+            }
+        }
+    }

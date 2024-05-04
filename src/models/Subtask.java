@@ -13,6 +13,9 @@ public class Subtask extends Task {
     }
 
     public void setParentEpicId(int parentEpicId) {
+        if (this.getId() == parentEpicId) {
+            throw new IllegalArgumentException("Подзадача не может устанавливать себя в качестве родительского эпоса");
+        }
         this.parentEpicId = parentEpicId;
     }
 
