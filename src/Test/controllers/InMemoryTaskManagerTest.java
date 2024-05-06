@@ -1,5 +1,7 @@
 package Test.controllers;
 
+import controllers.HistoryManager;
+import controllers.InMemoryHistoryManager;
 import controllers.InMemoryTaskManager;
 import models.*;
 import static models.Status.*;
@@ -18,7 +20,8 @@ class InMemoryTaskManagerTest {
     // Инициализация менеджера задач перед каждым тестом
     @BeforeEach
     void setUp() {
-        manager = new InMemoryTaskManager();
+        HistoryManager historyManager = new InMemoryHistoryManager();
+        manager = new InMemoryTaskManager(historyManager);
     }
 
     // Проверка, что менеджер истории добавляет разные типы задач и может обнаружить их по id.
@@ -28,6 +31,7 @@ class InMemoryTaskManagerTest {
         Task task = new Task("Задача", "Описание задачи", NEW);
         Task createdTask = manager.createTask(task); // Создаем задачу с помощью createTask
         int taskId = createdTask.getId(); // Получаем id созданной задачи
+        task.setId(taskId); // Устанавливаем id для исходной задачи, чтобы совпадать с createdTask
         Task retrievedTask = manager.getTask(taskId); // Получаем задачу по ее id
         assertEquals(task, retrievedTask, "Созданная задача и извлеченная по id должны быть одинаковыми.");
     }
@@ -49,16 +53,17 @@ class InMemoryTaskManagerTest {
     @Test
     void checkTaskImmutability() {
         Task task = new Task("Задача", "Описание задачи", NEW);
-        // Создаем копию исходной задачи для сравнения
-        Task originalTask = new Task("Задача", "Описание задачи", NEW);
-        manager.createTask(task); // Добавляем задачу
+        Task originalTask = new Task(task.getTaskName(), task.getDescription(), task.getStatus());
+        originalTask.setId(task.getId());
+        manager.createTask(task);
         assertEquals(originalTask, task,
                 "Поля задачи не должны изменяться после добавления задачи в менеджер.");
     }
 
     @Test
     public void testDeleteAllTasks() {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+        HistoryManager historyManager = new InMemoryHistoryManager();
+        InMemoryTaskManager taskManager = new InMemoryTaskManager(historyManager);
         for (int i = 0; i < 5; i++) {
             Task task = new Task("Задача " + i, "Описание " + i, Status.NEW);
             taskManager.createTask(task);
@@ -70,7 +75,8 @@ class InMemoryTaskManagerTest {
 
     @Test
     public void testUpdateTask() {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+        HistoryManager historyManager = new InMemoryHistoryManager();
+        InMemoryTaskManager taskManager = new InMemoryTaskManager(historyManager);
         Task task1 = new Task("Задача 1", "Описание 1", Status.NEW);
         Task storedTask = taskManager.createTask(task1);
         storedTask.setTaskName("Имя задачи обновлено");
@@ -80,7 +86,8 @@ class InMemoryTaskManagerTest {
 
     @Test
     public void testCreateEpic() {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+        HistoryManager historyManager = new InMemoryHistoryManager();
+        InMemoryTaskManager taskManager = new InMemoryTaskManager(historyManager);
         Epic epic = new Epic("Эпик 1", "Описание 1", Status.NEW);
         Epic storedEpic = taskManager.createEpic(epic);
         assertEquals(epic, storedEpic);
@@ -88,7 +95,8 @@ class InMemoryTaskManagerTest {
 
     @Test
     public void testUpdateEpic() {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+        HistoryManager historyManager = new InMemoryHistoryManager();
+        InMemoryTaskManager taskManager = new InMemoryTaskManager(historyManager);
         Epic epic1 = new Epic("Эпик 1", "Описание 1", Status.NEW);
         Epic storedEpic = taskManager.createEpic(epic1);
         storedEpic.setTaskName("Имя эпика обновлено");
@@ -98,7 +106,8 @@ class InMemoryTaskManagerTest {
 
     @Test
     public void testDeleteEpic() {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+        HistoryManager historyManager = new InMemoryHistoryManager();
+        InMemoryTaskManager taskManager = new InMemoryTaskManager(historyManager);
         Epic epic1 = new Epic("Эпик 1", "Описание 1", Status.NEW);
         Epic storedEpic = taskManager.createEpic(epic1);
         taskManager.deleteEpicById(storedEpic.getId());
@@ -107,7 +116,8 @@ class InMemoryTaskManagerTest {
 
     @Test
     public void testGetAllEpics() {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+        HistoryManager historyManager = new InMemoryHistoryManager();
+        InMemoryTaskManager taskManager = new InMemoryTaskManager(historyManager);
         for (int i = 0; i < 5; i++) {
             Epic epic = new Epic("Эпик " + i, "Описание " + i, Status.NEW);
             taskManager.createEpic(epic);
@@ -118,7 +128,8 @@ class InMemoryTaskManagerTest {
 
     @Test
     public void testCreateSubtask() {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+        HistoryManager historyManager = new InMemoryHistoryManager();
+        InMemoryTaskManager taskManager = new InMemoryTaskManager(historyManager);
         Epic epic = new Epic("Эпик 1", "Описание 1", Status.NEW);
         taskManager.createEpic(epic);
         Subtask subtask = new Subtask("Подзадача 1", "Описание", Status.NEW, epic.getId());
@@ -128,7 +139,8 @@ class InMemoryTaskManagerTest {
 
     @Test
     public void testGetAllSubtasks() {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+        HistoryManager historyManager = new InMemoryHistoryManager();
+        InMemoryTaskManager taskManager = new InMemoryTaskManager(historyManager);
         Epic epic = new Epic("Эпик 1", "Описание 1", Status.NEW);
         taskManager.createEpic(epic);
         for (int i = 0; i < 5; i++) {
@@ -141,7 +153,8 @@ class InMemoryTaskManagerTest {
 
     @Test
     public void testDeleteSubtask() {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+        HistoryManager historyManager = new InMemoryHistoryManager();
+        InMemoryTaskManager taskManager = new InMemoryTaskManager(historyManager);
         Epic epic = new Epic("Эпик 1", "Описание 1", Status.NEW);
         taskManager.createEpic(epic);
         Subtask subtask1 = new Subtask("Подзадача 1", "Описание 1", Status.NEW, epic.getId());
@@ -152,7 +165,8 @@ class InMemoryTaskManagerTest {
 
     @Test
     public void testUpdateSubtask() {
-        InMemoryTaskManager taskManager = new InMemoryTaskManager();
+        HistoryManager historyManager = new InMemoryHistoryManager();
+        InMemoryTaskManager taskManager = new InMemoryTaskManager(historyManager);
         Epic epic = new Epic("Эпик 1", "Описание 1", Status.NEW);
         taskManager.createEpic(epic);
         Subtask subtask1 = new Subtask("Подзадача 1", "Описание 1", Status.NEW, epic.getId());

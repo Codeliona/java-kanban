@@ -6,12 +6,14 @@ public class Task {
     private String taskName;
     private String description;
     private int id;
+    private static int nextId = 1;
     private Status status;
 
     public Task(String taskName, String description, Status status) {
         this.taskName = taskName;
         this.description = description;
         this.status = status;
+        this.id = nextId++;
     }
 
     public String getTaskName(){

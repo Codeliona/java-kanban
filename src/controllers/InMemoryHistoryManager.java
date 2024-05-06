@@ -11,6 +11,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     private final LinkedList<Task> recentViews = new LinkedList<>();
 
     public void add(Task task) {
+        recentViews.remove(task);
         if (recentViews.size() == MAX_RECENT_TASKS) {
             recentViews.removeFirst();
         }
@@ -19,6 +20,6 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public List<Task> getHistory() {
-        return recentViews;
+        return new LinkedList<>(recentViews);
     }
 }
