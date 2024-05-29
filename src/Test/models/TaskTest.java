@@ -1,9 +1,11 @@
 package Test.models;
 
 import models.*;
+
 import static models.Status.*;
 
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TaskTest {

@@ -2,9 +2,11 @@ package Test.models;
 
 import models.Epic;
 import models.Subtask;
+
 import static models.Status.*;
 
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class EpicTest {
