@@ -22,6 +22,7 @@ public interface TaskManager {
     void updateTask(Task updatedTask);
     void updateSubtask(Subtask updatedSubtask);
     void updateEpic(Epic updatedEpic);
+    void removeFromHistory(int id);
     ArrayList<Subtask> getSubtasksForEpic(Epic epic);
     List<Task> getHistory();
 }

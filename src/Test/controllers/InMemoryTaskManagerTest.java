@@ -175,4 +175,60 @@ class InMemoryTaskManagerTest {
         taskManager.updateSubtask(storedSubtask);
         assertEquals("Имя подзадачи обновлено", taskManager.getSubtask(storedSubtask.getId()).getTaskName());
     }
+
+    // Используя сеттеры, мы меняем поля экземпляров задач, после чего убеждаемся,
+    // что изменения отражены в данных менеджера.
+    @Test
+    public void whenTaskFieldsAreChanged_TheseChangesAreReflectedInManager() {
+        InMemoryTaskManager manager = new InMemoryTaskManager(new InMemoryHistoryManager());
+        Task task = new Task("Задача", "Описание задачи", Status.NEW);
+
+        Task createdTask = manager.createTask(task);
+        createdTask.setTaskName("Измененная задача");
+
+        Task retrievedTask = manager.getTask(createdTask.getId());
+        assertEquals("Измененная задача", retrievedTask.getTaskName());
+    }
+
+    // Проверить, что при удалении задачи, главной задачи или подзадачи, история корректно обновляется.
+    @Test
+    public void whenTaskIsDeleted_ItsRemovedFromHistory() {
+        InMemoryTaskManager manager = new InMemoryTaskManager(new InMemoryHistoryManager());
+        Task task = new Task("Задача", "Описание задачи", Status.NEW);
+
+        Task createdTask = manager.createTask(task);
+        manager.deleteTaskById(createdTask.getId());
+
+        List<Task> taskHistory = manager.getHistory();
+        assertTrue(taskHistory.stream().noneMatch(t -> "Задача".equals(t.getTaskName())));
+    }
+
+    // Проверка, что при добавлении задачи или изменении статуса задачи, эти изменения корректно отражаются в истории.
+    @Test
+    public void whenTaskIsAddedOrStatusChanged_ItsReflectedInHistory() {
+        InMemoryTaskManager manager = new InMemoryTaskManager(new InMemoryHistoryManager());
+        Task task = new Task("Задача", "Описание задачи", Status.NEW);
+
+        Task createdTask = manager.createTask(task);
+        createdTask.setStatus(Status.IN_PROGRESS);
+        manager.updateTask(createdTask);
+
+        List<Task> taskHistory = manager.getHistory();
+        assertTrue(taskHistory.stream().anyMatch(t -> "Задача".equals(t.getTaskName())));
+        assertTrue(taskHistory.stream().anyMatch(t -> t.getStatus() == Status.IN_PROGRESS));
+    }
+
+    // Проверка того, что внутри эпиков не остается неактуальных идентификаторов подзадач.
+    @Test
+    public void whenSubtaskIsDeleted_ItsIdIsRemovedFromParentEpic() {
+        InMemoryTaskManager manager = new InMemoryTaskManager(new InMemoryHistoryManager());
+        Epic epic = new Epic("Эпик", "Описание эпика", Status.NEW);
+        Subtask subTask = new Subtask("Подзадача", "Описание подзадачи", Status.NEW, epic.getId());
+
+        Epic createdEpic = manager.createEpic(epic);
+        Subtask createdSubtask = manager.createSubtask(subTask);
+        manager.deleteSubtaskById(createdSubtask.getId());
+
+        assertFalse(createdEpic.getSubTaskIds().contains(createdSubtask.getId()));
+    }
 }
