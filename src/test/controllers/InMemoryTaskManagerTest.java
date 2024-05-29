@@ -1,4 +1,4 @@
-package Test.controllers;
+package test.controllers;
 
 import controllers.HistoryManager;
 import controllers.InMemoryHistoryManager;

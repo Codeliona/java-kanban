@@ -1,4 +1,4 @@
-package Test.models;
+package test.models;
 
 import static models.Status.*;
 
