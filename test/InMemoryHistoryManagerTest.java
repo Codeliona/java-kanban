@@ -1,14 +1,11 @@
-package test.controllers;
-
 import controllers.InMemoryHistoryManager;
 import controllers.InMemoryTaskManager;
 import models.*;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryHistoryManagerTest {
 
@@ -22,7 +19,7 @@ class InMemoryHistoryManagerTest {
 
         List<Task> history = historyManager.getHistory();
         Assertions.assertEquals(1, history.size());
-        Assertions.assertEquals(task, history.get(0));
+        Assertions.assertEquals(task, history.getFirst());
     }
 
     // Проверка, что что InMemoryHistoryManager сохраняет только заданное количество последних задач
@@ -39,7 +36,7 @@ class InMemoryHistoryManagerTest {
 
         List<Task> history = historyManager.getHistory();
         Assertions.assertEquals(historyLimit, history.size());
-        Assertions.assertEquals("Задача 6", history.get(0).getTaskName());
+        Assertions.assertEquals("Задача 6", history.getFirst().getTaskName());
     }
 
     @Test
@@ -71,7 +68,7 @@ class InMemoryHistoryManagerTest {
         // Убеждаемся, что старейшая задача была удалена из истории
         history = manager.getHistory();
         Assertions.assertEquals(maxRecentTasks, history.size());
-        Assertions.assertFalse(history.contains(createdTasks.get(0)));
+        Assertions.assertFalse(history.contains(createdTasks.getFirst()));
     }
 
 

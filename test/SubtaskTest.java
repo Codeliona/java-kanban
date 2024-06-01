@@ -1,11 +1,7 @@
-package test.models;
-
-import static models.Status.*;
-
+import models.Status;
 import models.Subtask;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class SubtaskTest {
 
@@ -15,8 +11,7 @@ class SubtaskTest {
         // Подготовка к тесту
         int parentEpicId = 1;
         Subtask subtask1 = new Subtask("Подзадача 1", "Описание подзадачи 1", Status.NEW, parentEpicId);
-        Subtask subtask2 = new Subtask("Подзадача 2", "Описание подзадачи 2", Status.IN_PROGRESS,
-                parentEpicId);
+        Subtask subtask2 = new Subtask("Подзадача 2", "Описание подзадачи 2", Status.IN_PROGRESS, parentEpicId);
         // Установим id вручную
         subtask1.setId(1);
         subtask2.setId(1);
@@ -30,7 +25,6 @@ class SubtaskTest {
         int parentEpicId = 1; // произвольное значение для parentEpicId
         Subtask subtask = new Subtask("Подзадача", "Описание подзадачи", Status.NEW, parentEpicId);
         // Проверка
-        Assertions.assertThrows(IllegalArgumentException.class, () -> subtask.setParentEpicId(subtask.getId()),
-                "Подзадача не может устанавливать себя в качестве родительского эпоса");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> subtask.setParentEpicId(subtask.getId()), "Подзадача не может устанавливать себя в качестве родительского эпоса");
     }
 }
