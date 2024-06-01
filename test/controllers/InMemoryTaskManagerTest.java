@@ -29,35 +29,35 @@ class InMemoryTaskManagerTest {
     @Test
     void checkInMemoryTaskManager() {
         // Подготовка
-        Task task = new Task("Задача", "Описание задачи", NEW);
+        Task task = new Task("Задача", "Описание задачи", Status.NEW);
         Task createdTask = manager.createTask(task); // Создаем задачу с помощью createTask
         int taskId = createdTask.getId(); // Получаем id созданной задачи
         task.setId(taskId); // Устанавливаем id для исходной задачи, чтобы совпадать с createdTask
         Task retrievedTask = manager.getTask(taskId); // Получаем задачу по ее id
-        assertEquals(task, retrievedTask, "Созданная задача и извлеченная по id должны быть одинаковыми.");
+        Assertions.assertEquals(task, retrievedTask, "Созданная задача и извлеченная по id должны быть одинаковыми.");
     }
 
     // Проверяет, что задачи с заданным id и генерируемым менеджером id не конфликтуют внутри менеджера.
     @Test
     void checkIdConflict() {
         // Подготовка
-        Task manualIdTask = new Task("Заданный ID Задачи", "Description", NEW);
+        Task manualIdTask = new Task("Заданный ID Задачи", "Description", Status.NEW);
         manualIdTask.setId(100);
         Task manualAddedTask = manager.createTask(manualIdTask); // Добавляем задачу с заданным id
-        Task autoIdTask = new Task("Сгенерированный ID задачи", "Описание", NEW);
+        Task autoIdTask = new Task("Сгенерированный ID задачи", "Описание", Status.NEW);
         Task autoAddedTask = manager.createTask(autoIdTask); // Добавляем задачу с автоматически генерируемым id
-        assertNotNull(manager.getTask(manualAddedTask.getId()), "Задача с заданным id должна быть обнаружена.");
-        assertNotNull(manager.getTask(autoAddedTask.getId()), "Задача с генерируемым id должна быть обнаружена.");
+        Assertions.assertNotNull(manager.getTask(manualAddedTask.getId()), "Задача с заданным id должна быть обнаружена.");
+        Assertions.assertNotNull(manager.getTask(autoAddedTask.getId()), "Задача с генерируемым id должна быть обнаружена.");
     }
 
     // Проверка, что задача остается неизменной после добавления в менеджер.
     @Test
     void checkTaskImmutability() {
-        Task task = new Task("Задача", "Описание задачи", NEW);
+        Task task = new Task("Задача", "Описание задачи", Status.NEW);
         Task originalTask = new Task(task.getTaskName(), task.getDescription(), task.getStatus());
         originalTask.setId(task.getId());
         manager.createTask(task);
-        assertEquals(originalTask, task,
+        Assertions.assertEquals(originalTask, task,
                 "Поля задачи не должны изменяться после добавления задачи в менеджер.");
     }
 
@@ -71,7 +71,7 @@ class InMemoryTaskManagerTest {
         }
         taskManager.deleteAllTasks();
         List<Task> allTasks = taskManager.getAllTasks();
-        assertTrue(allTasks.isEmpty());
+        Assertions.assertTrue(allTasks.isEmpty());
     }
 
     @Test
@@ -82,7 +82,7 @@ class InMemoryTaskManagerTest {
         Task storedTask = taskManager.createTask(task1);
         storedTask.setTaskName("Имя задачи обновлено");
         taskManager.updateTask(storedTask);
-        assertEquals("Имя задачи обновлено", taskManager.getTask(storedTask.getId()).getTaskName());
+        Assertions.assertEquals("Имя задачи обновлено", taskManager.getTask(storedTask.getId()).getTaskName());
     }
 
     @Test
@@ -91,7 +91,7 @@ class InMemoryTaskManagerTest {
         InMemoryTaskManager taskManager = new InMemoryTaskManager(historyManager);
         Epic epic = new Epic("Эпик 1", "Описание 1", Status.NEW);
         Epic storedEpic = taskManager.createEpic(epic);
-        assertEquals(epic, storedEpic);
+        Assertions.assertEquals(epic, storedEpic);
     }
 
     @Test
@@ -102,7 +102,7 @@ class InMemoryTaskManagerTest {
         Epic storedEpic = taskManager.createEpic(epic1);
         storedEpic.setTaskName("Имя эпика обновлено");
         taskManager.updateEpic(storedEpic);
-        assertEquals("Имя эпика обновлено", taskManager.getEpic(storedEpic.getId()).getTaskName());
+        Assertions.assertEquals("Имя эпика обновлено", taskManager.getEpic(storedEpic.getId()).getTaskName());
     }
 
     @Test
@@ -112,7 +112,7 @@ class InMemoryTaskManagerTest {
         Epic epic1 = new Epic("Эпик 1", "Описание 1", Status.NEW);
         Epic storedEpic = taskManager.createEpic(epic1);
         taskManager.deleteEpicById(storedEpic.getId());
-        assertNull(taskManager.getEpic(storedEpic.getId()));
+        Assertions.assertNull(taskManager.getEpic(storedEpic.getId()));
     }
 
     @Test
@@ -124,7 +124,7 @@ class InMemoryTaskManagerTest {
             taskManager.createEpic(epic);
         }
         List<Epic> allEpics = taskManager.getAllEpics();
-        assertEquals(5, allEpics.size());
+        Assertions.assertEquals(5, allEpics.size());
     }
 
     @Test
@@ -135,7 +135,7 @@ class InMemoryTaskManagerTest {
         taskManager.createEpic(epic);
         Subtask subtask = new Subtask("Подзадача 1", "Описание", Status.NEW, epic.getId());
         Subtask storedSubtask = taskManager.createSubtask(subtask);
-        assertEquals(subtask, storedSubtask);
+        Assertions.assertEquals(subtask, storedSubtask);
     }
 
     @Test
@@ -149,7 +149,7 @@ class InMemoryTaskManagerTest {
             taskManager.createSubtask(subtask);
         }
         List<Subtask> allSubtasks = taskManager.getAllSubtasks();
-        assertEquals(5, allSubtasks.size());
+        Assertions.assertEquals(5, allSubtasks.size());
     }
 
     @Test
@@ -161,7 +161,7 @@ class InMemoryTaskManagerTest {
         Subtask subtask1 = new Subtask("Подзадача 1", "Описание 1", Status.NEW, epic.getId());
         Subtask storedSubtask = taskManager.createSubtask(subtask1);
         taskManager.deleteSubtaskById(storedSubtask.getId());
-        assertNull(taskManager.getSubtask(storedSubtask.getId()));
+        Assertions.assertNull(taskManager.getSubtask(storedSubtask.getId()));
     }
 
     @Test
@@ -174,7 +174,7 @@ class InMemoryTaskManagerTest {
         Subtask storedSubtask = taskManager.createSubtask(subtask1);
         storedSubtask.setTaskName("Имя подзадачи обновлено");
         taskManager.updateSubtask(storedSubtask);
-        assertEquals("Имя подзадачи обновлено", taskManager.getSubtask(storedSubtask.getId()).getTaskName());
+        Assertions.assertEquals("Имя подзадачи обновлено", taskManager.getSubtask(storedSubtask.getId()).getTaskName());
     }
 
     // Используя сеттеры, мы меняем поля экземпляров задач, после чего убеждаемся,
@@ -188,7 +188,7 @@ class InMemoryTaskManagerTest {
         createdTask.setTaskName("Измененная задача");
 
         Task retrievedTask = manager.getTask(createdTask.getId());
-        assertEquals("Измененная задача", retrievedTask.getTaskName());
+        Assertions.assertEquals("Измененная задача", retrievedTask.getTaskName());
     }
 
     // Проверить, что при удалении задачи, главной задачи или подзадачи, история корректно обновляется.
@@ -201,7 +201,7 @@ class InMemoryTaskManagerTest {
         manager.deleteTaskById(createdTask.getId());
 
         List<Task> taskHistory = manager.getHistory();
-        assertTrue(taskHistory.stream().noneMatch(t -> "Задача".equals(t.getTaskName())));
+        Assertions.assertTrue(taskHistory.stream().noneMatch(t -> "Задача".equals(t.getTaskName())));
     }
 
     // Проверка, что при добавлении задачи или изменении статуса задачи, эти изменения корректно отражаются в истории.
@@ -215,8 +215,8 @@ class InMemoryTaskManagerTest {
         manager.updateTask(createdTask);
 
         List<Task> taskHistory = manager.getHistory();
-        assertTrue(taskHistory.stream().anyMatch(t -> "Задача".equals(t.getTaskName())));
-        assertTrue(taskHistory.stream().anyMatch(t -> t.getStatus() == Status.IN_PROGRESS));
+        Assertions.assertTrue(taskHistory.stream().anyMatch(t -> "Задача".equals(t.getTaskName())));
+        Assertions.assertTrue(taskHistory.stream().anyMatch(t -> t.getStatus() == Status.IN_PROGRESS));
     }
 
     // Проверка того, что внутри эпиков не остается неактуальных идентификаторов подзадач.
@@ -230,6 +230,6 @@ class InMemoryTaskManagerTest {
         Subtask createdSubtask = manager.createSubtask(subTask);
         manager.deleteSubtaskById(createdSubtask.getId());
 
-        assertFalse(createdEpic.getSubTaskIds().contains(createdSubtask.getId()));
+        Assertions.assertFalse(createdEpic.getSubTaskIds().contains(createdSubtask.getId()));
     }
 }

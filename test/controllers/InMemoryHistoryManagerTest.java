@@ -21,8 +21,8 @@ class InMemoryHistoryManagerTest {
         historyManager.add(task);
 
         List<Task> history = historyManager.getHistory();
-        assertEquals(1, history.size());
-        assertEquals(task, history.get(0));
+        Assertions.assertEquals(1, history.size());
+        Assertions.assertEquals(task, history.get(0));
     }
 
     // Проверка, что что InMemoryHistoryManager сохраняет только заданное количество последних задач
@@ -38,8 +38,8 @@ class InMemoryHistoryManagerTest {
         }
 
         List<Task> history = historyManager.getHistory();
-        assertEquals(historyLimit, history.size());
-        assertEquals("Задача 6", history.get(0).getTaskName());
+        Assertions.assertEquals(historyLimit, history.size());
+        Assertions.assertEquals("Задача 6", history.get(0).getTaskName());
     }
 
     @Test
@@ -59,9 +59,9 @@ class InMemoryHistoryManagerTest {
 
         // Проверяем, что задачи добавлены в историю
         List<Task> history = manager.getHistory();
-        assertEquals(maxRecentTasks, history.size());
+        Assertions.assertEquals(maxRecentTasks, history.size());
         for (Task task : createdTasks) {
-            assertTrue(history.contains(task));
+            Assertions.assertTrue(history.contains(task));
         }
 
         // Добавляем еще одну задачу, выходящую за пределы maxRecentTasks
@@ -70,8 +70,8 @@ class InMemoryHistoryManagerTest {
 
         // Убеждаемся, что старейшая задача была удалена из истории
         history = manager.getHistory();
-        assertEquals(maxRecentTasks, history.size());
-        assertFalse(history.contains(createdTasks.get(0)));
+        Assertions.assertEquals(maxRecentTasks, history.size());
+        Assertions.assertFalse(history.contains(createdTasks.get(0)));
     }
 
 
@@ -88,6 +88,6 @@ class InMemoryHistoryManagerTest {
         List<Task> taskHistory = manager.getHistory();
         long modifiedCount = taskHistory.stream().filter(t -> "Измененная задача".equals(t.getTaskName())).count();
 
-        assertEquals(1, modifiedCount, "Modified task not found in history");
+        Assertions.assertEquals(1, modifiedCount, "Modified task not found in history");
     }
 }
