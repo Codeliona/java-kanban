@@ -7,12 +7,6 @@ import java.util.*;
 public class InMemoryHistoryManager implements HistoryManager {
     private static final int MAXRECENTTASKS = 10;
 
-    static class Node {
-        Task task;
-        Node prev;
-        Node next;
-    }
-
     private final Map<Integer, Node> nodeMap = new HashMap<>();
     private final Node head = new Node();
     private final Node tail = new Node();
@@ -22,7 +16,12 @@ public class InMemoryHistoryManager implements HistoryManager {
         tail.prev = head;
     }
 
+    @Override
     public void add(Task task) {
+        if (task == null) {
+            return;
+        }
+
         Node node = nodeMap.get(task.getId());
         if (node != null) {
             removeNode(node);
@@ -56,6 +55,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         nextNode.prev = prevNode;
     }
 
+    @Override
     public void remove(int id) {
         Node node = nodeMap.get(id);
         if (node != null) {
@@ -64,6 +64,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
     }
 
+    @Override
     public List<Task> getHistory() {
         List<Task> list = new ArrayList<>();
         Node cur = head.next;
@@ -72,5 +73,11 @@ public class InMemoryHistoryManager implements HistoryManager {
             cur = cur.next;
         }
         return list;
+    }
+
+    private static class Node {
+        Task task;
+        Node prev;
+        Node next;
     }
 }
