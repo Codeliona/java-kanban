@@ -16,23 +16,23 @@ public class Task {
         this.id = nextId++;
     }
 
-    public String getTaskName(){
+    public String getTaskName() {
         return taskName;
     }
 
-    public void setTaskName(String taskName){
+    public void setTaskName(String taskName) {
         this.taskName = taskName;
     }
 
-    public String getDescription(){
+    public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description){
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    public int getId(){
+    public int getId() {
         return id;
     }
 
@@ -40,11 +40,11 @@ public class Task {
         this.id = id;
     }
 
-    public Status getStatus(){
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(Status status){
+    public void setStatus(Status status) {
         this.status = status;
     }
 

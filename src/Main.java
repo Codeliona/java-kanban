@@ -1,5 +1,9 @@
-import controllers.*;
-import models.*;
+import controllers.Managers;
+import controllers.TaskManager;
+import models.Epic;
+import models.Status;
+import models.Subtask;
+import models.Task;
 
 public class Main {
 
@@ -76,13 +80,13 @@ public class Main {
         }
 
         System.out.println("Подзадачи:");
-            for (Subtask subtask : manager.getAllSubtasks()) {
-                System.out.println(subtask);
-            }
+        for (Subtask subtask : manager.getAllSubtasks()) {
+            System.out.println(subtask);
+        }
 
-            System.out.println("История:");
-            for (Task task : manager.getHistory()) {
-                System.out.println(task);
-            }
+        System.out.println("История:");
+        for (Task task : manager.getHistory()) {
+            System.out.println(task);
         }
     }
+}
